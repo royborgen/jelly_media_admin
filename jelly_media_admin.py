@@ -16,12 +16,7 @@ def query_imdb_api(movie_id):
         primary_title
             type
             start_year
-           # plot
             genres
-           # rating {
-           #   aggregate_rating
-           #   votes_count
-           # }
           }
         }
         """ % movie_id
@@ -98,12 +93,6 @@ def set_destination_path(media_type, kids_media):
     KidsShows = "/media/storage/media/KidsShows/"
     Movies = "/media/storage/media/Movies/"
     Shows = "/media/storage/media/Shows/"
-
-    #KidsMovies = "/home/roy/test/KidsMovies/"
-    #KidsShows = "/home/roy/test/KidsShows/"
-    #Movies = "/home/roy/test/Movies/"
-    #Shows = "/home/roy/test/Shows/"
-
 
     if kids_media == False:
         if media_type == "tvSeries": 
