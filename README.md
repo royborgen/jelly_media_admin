@@ -1,4 +1,4 @@
-# Jellyfin Media Manager
+# Jellyfin Media Admin
 This Python script streamlines media management within Jellyfin by automating the organization of media files. Leveraging IMDb, it accurately identifies and categorizes media files (such as Movies, TV Shows, Children's Movies, or Children's Shows), ensuring they are organized in a Jellyfin-compatible structure.
 
 
