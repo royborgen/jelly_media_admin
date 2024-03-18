@@ -5,6 +5,7 @@ import sys
 import os
 import re
 import rarfile
+import configparser
 
 def query_imdb_api(movie_id):
     url = "https://graph.imdbapi.dev/v1"
@@ -16,7 +17,12 @@ def query_imdb_api(movie_id):
         primary_title
             type
             start_year
+           # plot
             genres
+           # rating {
+           #   aggregate_rating
+           #   votes_count
+           # }
           }
         }
         """ % movie_id
@@ -33,6 +39,23 @@ def query_imdb_api(movie_id):
     except requests.exceptions.RequestException as e:
         # Handle exceptions raised by the requests library
         return {"error": f"Request failed: {e}", "data": None}
+    
+
+def checkConfig(filename): 
+    #checks if configfile exist
+    if os.path.isfile(filename):
+        return True
+    else:
+        #creates a config file with default values if it does not exist
+        config = configparser.ConfigParser()
+        config["media"] = {"KidsMovies":"/media/storage/media/KidsMovies/", 
+                "KidsShows":"/media/storage/media/KidsShows/", 
+                "Movies":"media/storage/media/Movies/", 
+                "Shows":"/media/storage/media/Shows/" 
+                }
+        config.write(open(filename, "w"))
+        return False
+
 
 def checkfolder(folder_path):
 
@@ -86,14 +109,17 @@ def is_for_kids(json_data):
 
 
 def set_destination_path(media_type, kids_media):
+    #Fetching media storage locations from media.conf
+    config = configparser.ConfigParser()
+    config.read("media.conf")
+    KidsMovies = config["media"]["kidsmovies"]
+    KidsShows = config["media"]["kidsshows"]
+    Movies = config["media"]["movies"]
+    Shows = config["media"]["shows"]
+
     #setting default storage location to folder Movies
-    storage_location = "/home/roy/test/Movies/"
-
-    KidsMovies = "/media/storage/media/KidsMovies/"
-    KidsShows = "/media/storage/media/KidsShows/"
-    Movies = "/media/storage/media/Movies/"
-    Shows = "/media/storage/media/Shows/"
-
+    storage_location = Movies
+ 
     if kids_media == False:
         if media_type == "tvSeries": 
             storage_location = Shows
@@ -129,12 +155,11 @@ def unarchive(archive_path, destination_folder):
     try:
         # Check if the archive file exists
         if os.path.exists(archive_path):
-            # Get the total number of files in the archive
-            with rarfile.RarFile(archive_path, 'r') as rf:
-                total_files = len(rf.infolist())
+            # Get the total size of the archive
+            total_size = os.path.getsize(archive_path)
 
             # Initialize progress variables
-            files_extracted = 0
+            bytes_extracted = 0
 
             # Extract the archive
             with rarfile.RarFile(archive_path, 'r') as rf:
@@ -145,10 +170,10 @@ def unarchive(archive_path, destination_folder):
 
                     # Extract the file to the destination folder
                     rf.extract(file, destination_folder)
-                    
-                    # Update progress
-                    files_extracted += 1
-                    progress = (files_extracted / total_files) * 100
+
+                    # Update progress based on the size of the extracted file
+                    bytes_extracted += os.path.getsize(destination_path)
+                    progress = (bytes_extracted / total_size) * 100
                     print(f"Progress: {progress:.2f}%")
 
             print(f"Archive '{archive_path}' successfully extracted to '{destination_folder}'.")
@@ -156,7 +181,6 @@ def unarchive(archive_path, destination_folder):
             print(f"Error: Archive '{archive_path}' not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
-
 
 
 def create_symlink (source_path, link_path): 
@@ -181,6 +205,10 @@ def main():
         print(f"Error: The folder '{folder_path}' does not exist.")
         sys.exit(1)
 
+    if not checkConfig("media.conf"):
+        print("media.conf not found!\nA default file has been created. Edit it to set media folder locations.")
+        sys.exit(1)
+
     #Call function that checked the source folder for season number, if media is archived and fetches IMDb ID from NFO-file
     imdb_id, archived, season_number = checkfolder(folder_path)
        
@@ -191,7 +219,7 @@ def main():
         movie_id = input("No IMDb ID found.\n\nPlease enter the IMDb ID (enter blank for manual entry): ")
 
     
-    #fetching imdb-info
+    #fetching imdb-info. As user for details if unable to fetch data from nfo-file
     result = query_imdb_api(movie_id)
     if "errors" in result: 
         print(f"Error fetching data for IMDb ID")
@@ -239,7 +267,8 @@ def main():
    
     #sets correct destination path based on media type
     destination_path = set_destination_path(media_type, kids_media)    
-    
+        
+    #Unarchive if the source folder contains an archive and create symbolic link to download folder if unarchived media is found. 
     if archived: 
         if season_number: 
             create_folder(foldername, destination_path, season_number)
@@ -260,7 +289,8 @@ def main():
            symlink_dest = os.path.join(destination_path, foldername)
            print(f"Creating symbolic link from {folder_path} to {symlink_dest}")
            create_symlink (folder_path, symlink_dest) 
-            
+
+
 if __name__ == "__main__":
     main()
 
