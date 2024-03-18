@@ -1,23 +1,28 @@
-# jelly_media_admin
-Script to automatically manage mediafiles in Jellyfin library.
+# Jellyfin Media Manager
 
-The script will search imdb and identify a correct folder name and media type (Movies, Show, Kids Movie or Kids Show). 
-It will place the media in correct media folder in a format that jellyfin likes. 
+This Python script streamlines media management within Jellyfin by automating the organization of media files. Leveraging IMDb, it accurately identifies and categorizes media files (such as Movies, TV Shows, Children's Movies, or Children's Shows), ensuring they are organized in a Jellyfin-compatible structure.
 
-- The script will unrar mediafiles that are archived. 
-- Create symbolic links to unarchived media under correct folderstructure in Jellyfins media library.
-- If the script is unable to determin media type from IMDb, it will promt the user for needed inputs.
+## Key Features
 
-This the first iteration of this script. Further improvements to come
+- **Automated Unarchiving:** Extracts media files from archives, preparing them for use within Jellyfin.
+- **Symbolic Link Creation:** Generates symbolic links for extracted media, placing them in the appropriate folder structure in Jellyfin's media library for accessible and organized media.
+- **IMDb Integration:** Searches IMDb to efficiently categorize media into the correct folder and type. It prompts the user for input if the media type cannot be determined automatically, ensuring accurate classification.
+- **User-Friendly Interface:** Initially designed for Linux environments that extensively use symbolic links, future updates may enhance compatibility with Windows by incorporating shortcut creation.
 
+This script is the initial version, with plans to refine and expand its capabilities based on user feedback and evolving needs.
+
+## Note
+
+Optimized for Linux-based systems due to native support for symbolic links. Future updates may include Windows support by adapting the script to create shortcuts, thus improving cross-platform utility.
 
 ## Usage
-The script is executed by running jelly_media_admin.py
 
-# media.conf
-This is the scripts configuration file. 
-It contains the path to the various media types in Jellyfin. 
-By defualt it supports 4 media types: Movies, Showes, Kids Movies and Kids Shows. 
+Execute the script by running `jelly_media_admin.py`.
+
+## Configuration: `media.conf`
+
+This configuration file specifies the paths to various media types in Jellyfin, supporting four default media types: Movies, Shows, Kids Movies, and Kids Shows.
+If the file does not exist, it is created with default values. 
 
 ```
 [media]
