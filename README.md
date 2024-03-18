@@ -36,7 +36,7 @@ shows = /media/storage/media/Shows/
 ```
 NFO-file found
 Processing file: /media/storage/downloads/A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.nfo
-IMDb ID found in A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.nfo: ['tt0098206']
+IMDb ID found in A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.nfo: ['tt012456']
 Folder contains RAR archive: A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.rar
 Extracting archive to /media/storage/media/Movies/'A Fantastic Movie (2024)'
 Extracting japhson-rh.mkv to /media/storage/media/Movies/A Fantastic Movie (2024)/A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.mkv
