@@ -6,7 +6,7 @@ This Python script streamlines media management within Jellyfin by automating th
 - **Automated Unarchiving:** Extracts media files from archives, preparing them for use within Jellyfin.
 - **Symbolic Link Creation:** Generates symbolic links for extracted media, placing them in the appropriate folder structure in Jellyfin's media library for accessible and organized media.
 - **IMDb Integration:** Searches IMDb to efficiently categorize media into the correct folder and type. It prompts the user for input if the media type cannot be determined automatically, ensuring accurate classification.
-- **Jellyfin library support**: Supports Movies and shows, organized in Jellyfin friendly folders. Example: A Fantastic Movie (2024), A Fantastic Series\Season 01\ 
+- **Jellyfin library support**: Supports Movies and shows, organized in Jellyfin friendly folders. Example: A Fantastic Movie (2024), A Fantastic Series (2024)\Season 01\ 
 
 This script is the initial version, with plans to refine and expand its capabilities based on user feedback and evolving needs.
 
