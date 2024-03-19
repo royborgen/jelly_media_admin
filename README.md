@@ -40,6 +40,7 @@ IMDb ID found in A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.nfo: ['tt012456
 Folder contains RAR archive: A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.rar
 Extracting archive to /media/storage/media/Movies/'A Fantastic Movie (2024)'
 Extracting A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.mkv to /media/storage/media/Movies/A Fantastic Movie (2024)/A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.mkv
+Progress: 100%
 Archive '/media/storage/downloads/A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker/A.Fantastic.Movie.2024.1080p.BluRay.x264-hacker.rar' successfully extracted to '/media/storage/media/Movies/A Fantastic Movie (2024)'.
 ```
 
