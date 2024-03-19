@@ -6,6 +6,8 @@ import os
 import re
 import rarfile
 import configparser
+import threading
+import time
 
 def query_imdb_api(movie_id):
     url = "https://graph.imdbapi.dev/v1"
@@ -151,37 +153,45 @@ def create_folder(folder_name, destination_path, season_number):
         print(f"An error occurred: {e}")
 
 
+def calculate_extracted_size(destination_folder):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(destination_folder):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+    return total_size
+
+def display_progress(archive_size, destination_folder, stop_event):
+    while not stop_event.is_set():
+        extracted_size = calculate_extracted_size(destination_folder)
+        progress = (extracted_size / archive_size) * 100
+        print(f"\r\033[KProgress: {progress:.0f}%", end="")
+        time.sleep(0.5)  # Update every 2 seconds
+
 def unarchive(archive_path, destination_folder):
     try:
-        # Check if the archive file exists
         if os.path.exists(archive_path):
-            # Get the total number of files in the archive
             with rarfile.RarFile(archive_path, 'r') as rf:
                 total_files = len(rf.infolist())
+                archive_size = sum(file.file_size for file in rf.infolist())
 
-            # Initialize progress variables
-            files_extracted = 0
+            # Initialize threading event to stop the progress display thread
+            stop_event = threading.Event()
+            progress_thread = threading.Thread(target=display_progress, args=(archive_size, destination_folder, stop_event))
 
-            # Extract the archive
+            progress_thread.start()
+
             with rarfile.RarFile(archive_path, 'r') as rf:
-                for file in rf.namelist():
-                    # Construct the destination path for the file
-                    destination_path = os.path.join(destination_folder, os.path.basename(file))
-                    print(f"Extracting {file} to {destination_path}")
+                rf.extractall(path=destination_folder)
+                stop_event.set()  # Stop the progress thread
+                progress_thread.join()  # Wait for the progress thread to finish
 
-                    # Extract the file to the destination folder
-                    rf.extract(file, destination_folder)
-
-                    # Update progress
-                    files_extracted += 1
-                    progress = (files_extracted / total_files) * 100
-                    print(f"Progress: {progress:.2f}%")
-
-            print(f"Archive '{archive_path}' successfully extracted to '{destination_folder}'.")
+            print(f"\nArchive '{archive_path}' successfully extracted to '{destination_folder}'.")
         else:
             print(f"Error: Archive '{archive_path}' not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
+   
 
 
 def create_symlink (source_path, link_path): 
@@ -294,4 +304,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
