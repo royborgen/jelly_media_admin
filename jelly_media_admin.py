@@ -155,11 +155,12 @@ def unarchive(archive_path, destination_folder):
     try:
         # Check if the archive file exists
         if os.path.exists(archive_path):
-            # Get the total size of the archive
-            total_size = os.path.getsize(archive_path)
+            # Get the total number of files in the archive
+            with rarfile.RarFile(archive_path, 'r') as rf:
+                total_files = len(rf.infolist())
 
             # Initialize progress variables
-            bytes_extracted = 0
+            files_extracted = 0
 
             # Extract the archive
             with rarfile.RarFile(archive_path, 'r') as rf:
@@ -171,9 +172,9 @@ def unarchive(archive_path, destination_folder):
                     # Extract the file to the destination folder
                     rf.extract(file, destination_folder)
 
-                    # Update progress based on the size of the extracted file
-                    bytes_extracted += os.path.getsize(destination_path)
-                    progress = (bytes_extracted / total_size) * 100
+                    # Update progress
+                    files_extracted += 1
+                    progress = (files_extracted / total_files) * 100
                     print(f"Progress: {progress:.2f}%")
 
             print(f"Archive '{archive_path}' successfully extracted to '{destination_folder}'.")
